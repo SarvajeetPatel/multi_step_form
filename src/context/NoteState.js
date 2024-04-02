@@ -55,7 +55,7 @@ function NoteState() {
     return (
         <>
             <NoteContext.Provider value={{ FORM_STATE, FORM_STEPS }}>
-                {props.children}
+                {/* {props.children} */}
             </NoteContext.Provider>
         </>
     )

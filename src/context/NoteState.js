@@ -1,61 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import NoteContext from './NoteContext'
 
-function NoteState() {
-    const FORM_STEPS = [
-        { label: `Personal Details` },
-        { label: `Work Experience` },
-        { label: `Your Skills` },
-        { label: `Self Description` }
-    ]
+function NoteState(props) {
 
-    const FORM_STATE = {
-        selectedIndex: 0,
-        steps: {
-            details: {
-                valid: true,
-                dirty: true,
-                value: {
-                    name: '',
-                    email: '',
-                    contact: '',
-                    address: '',
-                    gender: '',
-                    birthDate: ''
-                }
-            },
-            work: {
-                valid: true,
-                dirty: true,
-                value: {
-                    name: '',
-                    startDate: '',
-                    endDate: '',
-                    job: ''
-                }
-            },
-            skills: {
-                valid: true,
-                dirty: true,
-                value: {
-                    industry: '',
-                    skills: [],
-                }
-            },
-            details: {
-                valid: false,
-                dirty: true,
-                value: {
-                    description: ''
-                }
-            }
-        }
-    }
+    const [personalDetails, setPersonalDetails] = useState({})
+    const [workExp, setWorkExp] = useState({})
+    const [skills, setSkills] = useState({})
+    const [desp, setDesp] = useState({})
 
     return (
         <>
-            <NoteContext.Provider value={{ FORM_STATE, FORM_STEPS }}>
-                {/* {props.children} */}
+            <NoteContext.Provider value={{ personalDetails, setPersonalDetails, workExp, setWorkExp, skills, setSkills, desp, setDesp }}>
+                {props.children}
             </NoteContext.Provider>
         </>
     )

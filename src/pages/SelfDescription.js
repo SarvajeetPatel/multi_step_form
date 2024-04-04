@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react'
+import { useFormikContext } from 'formik';
+import React from 'react'
 import {
   BtnBold,
   BtnItalic,
@@ -7,33 +8,16 @@ import {
   EditorProvider,
   Toolbar
 } from 'react-simple-wysiwyg';
-import NoteContext from '../context/NoteContext';
 
 const BtnAlignCenter = createButton('Align center', '≡', 'justifyCenter');
 
-function SelfDescription({ handleNext }) {
-  const [value, setValue] = useState('');
-  const { setDesp } = useContext(NoteContext);
-  const [errors, setError] = useState('');
-  function onChange(e) {
-    setValue(e.target.value);
-  }
-
-  function handleSubmit() {
-    if (!value) {
-      setError('Enter a description!')
-    } else {
-      setError('');
-      setDesp(value)
-      console.log(!value, "desp")
-      handleNext(value);
-    }
-  }
+function SelfDescription() {
+  const { setFieldValue, values } = useFormikContext();
 
   return (
     <>
       <EditorProvider>
-        <Editor value={value} onChange={onChange}>
+        <Editor value={values.desp.value} onChange={(e) => setFieldValue('desp.value', e.target.value)}>
           <Toolbar>
             <BtnBold />
             <BtnItalic />
@@ -42,8 +26,7 @@ function SelfDescription({ handleNext }) {
         </Editor>
       </EditorProvider>
       <br />
-      <div className='validate'> {errors} </div>
-      <button type='submit' onClick={handleSubmit}> SAVE </button>
+      {/* <div className='validate'> {errors} </div> */}
     </>
   )
 }

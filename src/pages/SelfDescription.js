@@ -12,7 +12,7 @@ import {
 const BtnAlignCenter = createButton('Align center', '≡', 'justifyCenter');
 
 function SelfDescription() {
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values, errors } = useFormikContext();
 
   return (
     <>
@@ -26,7 +26,7 @@ function SelfDescription() {
         </Editor>
       </EditorProvider>
       <br />
-      {/* <div className='validate'> {errors} </div> */}
+      <div className='validate'> {errors?.desp?.value} </div>
     </>
   )
 }

@@ -11,113 +11,69 @@ import Skills from './Skills';
 import SelfDescription from './SelfDescription';
 import { Formik } from 'formik';
 import { validationSchema } from '../components/validationSchema';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup'
 
 const steps = ['Personal Details', 'Work Experience', 'Skills', 'SelfDescription'];
 
 function HomePage() {
     const [activeStep, setActiveStep] = React.useState(0);
-
     const details = JSON.parse(localStorage.getItem('Personal Details')) || ''
     const workDetail = JSON.parse(localStorage.getItem('Work Experience')) || ''
     const skillDetails = JSON.parse(localStorage.getItem('Skills')) || ''
 
-    const { trigger, register, formState: { errors } } = useForm({
-        resolver: yupResolver(validationSchema)
-    });
-    // const [skipped, setSkipped] = React.useState(new Set());
+    React.useEffect(() => {
+        const currStep = JSON.parse(localStorage.getItem('step')) || 0
+        setActiveStep(currStep);
+    }, [])
 
-    // const isStepOptional = (step) => {
-    //     return step === 3;
-    // };
+    const handleNext = async (values) => {
 
-    // const isStepSkipped = (step) => {
-    //     return skipped.has(step);
-    // };
-
-    const handleNext = async (values, errors) => {
         switch (activeStep) {
             case 0:
-                await trigger();
-                if (errors.personalDetails === undefined) {
-                    localStorage.setItem('Personal Details', JSON.stringify(values.personalDetails))
-                    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                }
+                localStorage.setItem('Personal Details', JSON.stringify(values.personalDetails))
                 break;
             case 1:
-                await trigger();
-                if (errors.workExp === undefined) {
-                    localStorage.setItem('Work Experience', JSON.stringify(values.workExp))
-                    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                if (values.workExp.designation === 'fresher') {
+                    values.workExp.work = [];
                 }
+                localStorage.setItem('Work Experience', JSON.stringify(values.workExp))
                 break;
             case 2:
-                await trigger();
-                if (errors.skills === undefined) {
-                    localStorage.setItem('Skills', JSON.stringify(values.skills))
-                    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                }
+                localStorage.setItem('Skills', JSON.stringify(values.skills))
                 break;
             case 3:
-                await trigger();
-                if (errors.desp === undefined) {
-                    localStorage.setItem('Self Description', JSON.stringify(values.desp))
-                    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                }
+                localStorage.setItem('Self Description', JSON.stringify(values.desp))
+                const users = JSON.parse(localStorage.getItem('user application')) || []
+                users.push(values)
+                localStorage.setItem('user application', JSON.stringify(users))
                 break;
             default:
                 break;
         }
-        console.log(values, "values", errors)
-        // let newSkipped = skipped;
-        // if (isStepSkipped(activeStep)) {
-        //     newSkipped = new Set(newSkipped.values());
-        //     newSkipped.delete(activeStep);
-        // }
-
-        // setSkipped(newSkipped);
+        localStorage.setItem('step', JSON.stringify(activeStep + 1))
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
     const handleBack = () => {
+        localStorage.setItem('step', JSON.stringify(activeStep - 1))
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
-
-    // const handleSkip = () => {
-    //     if (!isStepOptional(activeStep)) {
-    //         throw new Error("You can't skip a step that isn't optional.");
-    //     }
-
-    //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    //     setSkipped((prevSkipped) => {
-    //         const newSkipped = new Set(prevSkipped.values());
-    //         newSkipped.add(activeStep);
-    //         return newSkipped;
-    //     });
-    // };
 
     const handleReset = () => {
         setActiveStep(0);
         localStorage.removeItem('Personal Details')
         localStorage.removeItem('Work Experience')
         localStorage.removeItem('Skills')
+        localStorage.removeItem('step')
         localStorage.removeItem('Self Description')
     };
 
     return (
         <Box sx={{ width: '100%' }}>
             <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => {
+                {steps.map((label) => {
                     const stepProps = {};
                     const labelProps = {};
-                    // if (isStepOptional(index)) {
-                    //     labelProps.optional = (
-                    //         <Typography variant="caption">Optional</Typography>
-                    //     );
-                    // }
-                    // if (isStepSkipped(index)) {
-                    //     stepProps.completed = false;
-                    // }
+
                     return (
                         <Step key={label} {...stepProps}>
                             <StepLabel {...labelProps}>{label}</StepLabel>
@@ -152,14 +108,26 @@ function HomePage() {
                                 value: ''
                             }
                         }}
-                        onSubmit={(values) => {
-                            console.log(values)
+                        onSubmit={async (values) => {
+                            try {
+                                await validationSchema[activeStep].isValid(values, { abortEarly: false });
+                                console.log("Validation successful");
+                                handleNext(values);
+                            } catch (errors) {
+                                console.error("Validation failed:", errors);
+                                return errors.inner.reduce((allErrors, currentError) => {
+                                    if (!allErrors[currentError.path]) {
+                                        allErrors[currentError.path] = currentError.message;
+                                    }
+                                    return allErrors;
+                                }, {});
+                            }
                         }}
                         validationSchema={validationSchema[activeStep]}
-                        validateOnChange={false}
+                        validateOnChange={true}
                     >
                         {
-                            ({ values, handleSubmit, errors }) => (
+                            ({ handleSubmit }) => (
                                 <form onSubmit={handleSubmit}>
                                     {activeStep === 0 && <PersonalDetails />}
                                     {activeStep === 1 && <WorkExperience />}
@@ -175,13 +143,8 @@ function HomePage() {
                                             Back
                                         </Button>
                                         <Box sx={{ flex: '1 1 auto' }} />
-                                        {/* {isStepOptional(activeStep) && (
-                                <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                                Skip
-                                </Button>
-                            )} */}
 
-                                        <Button type='button' onClick={() => handleNext(values, errors)}>
+                                        <Button type='submit'>
                                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                                         </Button>
                                     </Box>

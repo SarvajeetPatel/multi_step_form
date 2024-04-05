@@ -8,7 +8,7 @@ export const validationSchema = [
             contact: yup.string().required('Please Enter your contact'),
             address: yup.string().required('Please Enter your address'),
             gender: yup.string().required('Please select your gender'),
-            // birthDate: yup.date().required('Please Enter your birthDate')
+            birthDate: yup.string().required('Please Enter your birthDate')
         })
     }),
     yup.object().shape({
@@ -16,25 +16,21 @@ export const validationSchema = [
             designation: yup.string().required('Please select designation'),
             work: yup.array().of(
                 yup.object().shape({
-                    name: yup.string().when('designation', {
-                        is: 'experienced',
-                        then: yup.string().required('Enter Organisation NAme'),
-                        otherwise: yup.string()
+                    name: yup.string().test('name test', 'name is required!', function (value, ctx) {
+                        if (ctx.from[1].value.designation === 'experienced') return value !== undefined
+                        else return true
                     }),
-                    startDate: yup.string().when('designation', {
-                        is: 'experienced',
-                        then: yup.string().required('Enter startDate'),
-                        otherwise: yup.string()
+                    startDate: yup.string().test('startDate test', 'startDate is required!', function (value, ctx) {
+                        if (ctx.from[1].value.designation === 'experienced') return value !== undefined
+                        else return true
                     }),
-                    endDate: yup.string().when('designation', {
-                        is: 'experienced',
-                        then: yup.string().required('Enter endDate'),
-                        otherwise: yup.string()
+                    endDate: yup.string().test('endDate test', 'endDate is required!', function (value, ctx) {
+                        if (ctx.from[1].value.designation === 'experienced') return value !== undefined
+                        else return true
                     }),
-                    jobTitle: yup.string().when('designation', {
-                        is: 'experienced',
-                        then: yup.string().required('Enter jobTitle'),
-                        otherwise: yup.string()
+                    jobTitle: yup.string().test('jobTitle test', 'jobTitle is required!', function (value, ctx) {
+                        if (ctx.from[1].value.designation === 'experienced') return value !== undefined
+                        else return true
                     })
                 })
             )
@@ -43,9 +39,11 @@ export const validationSchema = [
     yup.object().shape({
         skills: yup.object().shape({
             industry: yup.string().required('Please choose your indsutry!'),
-            skills: yup.array().of(
-                yup.string().required('Please choose skills!')
-            )
+            skills: yup.array().test('skill test', 'Please choose at least One skill!', function (value, ctx) {
+                console.log(value, ctx)
+                if (ctx.from[0].value.industry !== 'Finance') return value.length !== 0
+                else return true
+            })
         })
     }),
     yup.object().shape({

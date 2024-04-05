@@ -2,8 +2,6 @@ import React from 'react'
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
 import { useFormikContext } from 'formik'
-// import NoteContext from '../context/NoteContext'
-// import * as yup from 'yup'
 
 function WorkExperience() {
   const { values, handleChange, setFieldValue, errors } = useFormikContext();
@@ -15,42 +13,13 @@ function WorkExperience() {
     form.setFieldValue('workExp.work', values.workExp.work)
   }
 
-  function handleNewWork(e, values, { setFieldValue }) {
+  function handleNewWork(values, { setFieldValue }) {
     values.workExp.work.push({ name: '', startDate: '', endDate: '', jobTitle: '' })
     setFieldValue('workExp.work', values.workExp.work)
   }
-
-  // const yupValidate = yup.object().shape({
-  //   designation: yup.string().required('Please select designation'),
-  //   work: yup.array().of(
-  //     yup.object().shape({
-  //       name: yup.string().when('designation', {
-  //         is: 'experienced',
-  //         then: yup.string().required('Enter name'),
-  //         otherwise: yup.string()
-  //       }),
-  //       startDate: yup.string().when('designation', {
-  //         is: 'experienced',
-  //         then: yup.string().required('Enter startDate'),
-  //         otherwise: yup.string()
-  //       }),
-  //       endDate: yup.string().when('designation', {
-  //         is: 'experienced',
-  //         then: yup.string().required('Enter endDate'),
-  //         otherwise: yup.string()
-  //       }),
-  //       jobTitle: yup.string().when('designation', {
-  //         is: 'experienced',
-  //         then: yup.string().required('Enter jobTitle'),
-  //         otherwise: yup.string()
-  //       })
-  //     })
-  //   )
-  // })
-
   return (
     <>
-      <h2> Work Experience! </h2> 
+      <h2> Work Experience! </h2>
 
       <h4>Are you a fresher or experienced? </h4>
       <input type='radio' name='workExp.designation' value='fresher' onChange={handleChange} defaultChecked={values.workExp.designation === 'fresher'} />
@@ -63,25 +32,25 @@ function WorkExperience() {
         values.workExp.work.map((work, i) => (
           <>
             <label>Organisation Name : </label>
-            <input type='text' name={`workExp.work[${i}].name`} value={values.workExp?.work[i]?.name} onChange={handleChange} /><br /><br />
-            <div className='validate'> {errors?.workExp?.work?.[i]?.name} </div>
+            <input type='text' name={`workExp.work[${i}].name`} value={values.workExp?.work[i]?.name} onChange={handleChange} />
+            <div className='validate'> {errors?.workExp?.work?.[i]?.name} </div><br />
 
             <label> Starting Date : </label>
-            <DatePicker name={`workExp.work[${i}].startDate`} selected={values.workExp?.work[i]?.startDate} onChange={(date) => setFieldValue(`workExp.work[${i}].startDate`, date)} /><br /><br />
-            <div className='validate'> {errors?.workExp?.work?.[i]?.startDate}</div>
+            <DatePicker name={`workExp.work[${i}].startDate`} minDate={new Date()} selected={values.workExp?.work[i]?.startDate} onChange={(date) => setFieldValue(`workExp.work[${i}].startDate`, date)} />
+            <div className='validate'> {errors?.workExp?.work?.[i]?.startDate}</div><br />
 
             <label> Completion Date : </label>
-            <DatePicker name={`workExp.work[${i}].endDate`} selected={values.workExp?.work[i]?.endDate} onChange={(date) => setFieldValue(`workExp.work[${i}].endDate`, date)} /><br /><br />
-            <div className='validate'> {errors?.workExp?.work?.[i]?.endDate}</div>
+            <DatePicker name={`workExp.work[${i}].endDate`} minDate={new Date() || values?.workExp?.work[i].startDate} selected={values.workExp?.work[i]?.endDate} onChange={(date) => setFieldValue(`workExp.work[${i}].endDate`, date)} />
+            <div className='validate'> {errors?.workExp?.work?.[i]?.endDate}</div><br />
 
             <label> Job Title : </label>
-            <input type='text' name={`workExp.work[${i}].jobTitle`} value={values.workExp?.work[i]?.jobTitle} onChange={handleChange} /><br /><br />
-            <div className='validate'> {errors?.workExp?.work?.[i]?.jobTitle}</div>
+            <input type='text' name={`workExp.work[${i}].jobTitle`} value={values.workExp?.work[i]?.jobTitle} onChange={handleChange} />
+            <div className='validate'> {errors?.workExp?.work?.[i]?.jobTitle}</div><br />
           </>
         ))
       }
       {values.workExp?.designation === 'experienced' &&
-        <button type='button' onClick={e => handleNewWork(e, values, { setFieldValue })}> ADD MORE </button>
+        <button type='button' onClick={() => handleNewWork(values, { setFieldValue })} disabled={errors?.workExp?.work}> ADD MORE </button>
       }
 
     </>

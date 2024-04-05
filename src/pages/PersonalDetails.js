@@ -1,9 +1,13 @@
 import React from 'react'
 import DatePicker from 'react-datepicker'
 import { useFormikContext } from 'formik'
+import { format } from 'date-fns'
 
 function PersonalDetails() {
     const { values, handleBlur, handleChange, setFieldValue, errors } = useFormikContext();
+    const min = Number(new Date().getFullYear() - 18)
+    const firstDate = format(new Date(), `${min}/12/31 00:00:00`)
+
     return (
         <>
             <h2> Personal Details </h2>
@@ -33,7 +37,7 @@ function PersonalDetails() {
             <div className='validate'>{errors?.personalDetails?.gender}</div> <br /> <br />
 
             <label> Select your BirthDate : </label>
-            <DatePicker name='personalDetails.birthDate' selected={values.personalDetails.birthDate} onChange={(date) => setFieldValue('personalDetails.birthDate', date.toDateString())} /><br />
+            <DatePicker name='personalDetails.birthDate' showIcon maxDate={firstDate} showFourColumnMonthYearPicker sho showYearDropdown selected={values.personalDetails.birthDate} onChange={(date) => setFieldValue('personalDetails.birthDate', date)} /><br />
             <div className='validate'>{errors?.personalDetails?.birthDate}</div>
         </>
     )

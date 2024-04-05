@@ -40,7 +40,7 @@ function WorkExperience() {
             <div className='validate'> {errors?.workExp?.work?.[i]?.startDate}</div><br />
 
             <label> Completion Date : </label>
-            <DatePicker name={`workExp.work[${i}].endDate`} showIcon minDate={values.workExp?.work[i]?.endDate} disabled={!values.workExp.work[i].startDate} selected={values.workExp?.work[i]?.endDate} onChange={(date) => setFieldValue(`workExp.work[${i}].endDate`, date)} />
+            <DatePicker name={`workExp.work[${i}].endDate`} showIcon minDate={values.workExp?.work[i]?.startDate} disabled={!values.workExp.work[i].startDate} selected={values.workExp?.work[i]?.endDate} onChange={(date) => setFieldValue(`workExp.work[${i}].endDate`, date)} />
             <div className='validate'> {errors?.workExp?.work?.[i]?.endDate}</div><br />
 
             <label> Job Title : </label>

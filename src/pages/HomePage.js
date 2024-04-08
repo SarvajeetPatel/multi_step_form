@@ -12,7 +12,7 @@ const steps = ['Personal Details', 'Work Experience', 'Skills', 'SelfDescription
 function HomePage() {
     const [activeStep, setActiveStep] = useState(0);
     const details = JSON.parse(localStorage.getItem('current application')) || {}
-
+    
     useEffect(() => {
         const currStep = JSON.parse(localStorage.getItem('step')) || 0
         setActiveStep(currStep);
@@ -41,16 +41,19 @@ function HomePage() {
     };
 
     const handleTabs = (i) => {
-        if (i === 1 && details.personalDetails.name !== '') {
+        if (i === 1 && details?.personalDetails?.name.length !== 0) {
             setActiveStep(1)
-        } else if (i === 2 && details.workExp.designation !== '') {
+            localStorage.setItem('step', JSON.stringify(i))
+        } else if (i === 2 && details?.workExp?.designation.length !== 0) {
             setActiveStep(2)
-        } else if (i === 3 && details.skills.industry !== '') {
+            localStorage.setItem('step', JSON.stringify(i))
+        } else if (i === 3 && details?.skills?.industry.length !== 0) {
             setActiveStep(3)
+            localStorage.setItem('step', JSON.stringify(i))
         } else if (i === 0) {
             setActiveStep(0)
+            localStorage.setItem('step', JSON.stringify(i))
         }
-        localStorage.setItem('step', JSON.stringify(i))
     }
 
     return (

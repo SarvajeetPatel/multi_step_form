@@ -55,13 +55,10 @@ function WorkExperience() {
 
             {(i !== 0) &&
               <button type='button' onClick={() => handleDelete(i, values, { setFieldValue })}> DELETE </button>}
+            <button type='button' onClick={() => handleNewWork(values, { setFieldValue })} disabled={values?.workExp?.work[i].name.length === 0 || values?.workExp?.work[i].startDate.length === 0 || values?.workExp?.work[i].endDate.length === 0 || values?.workExp?.work[i].jobTitle.length === 0}> ADD MORE </button >
           </>
         ))
       }
-      {values.workExp?.designation === 'experienced' &&
-        <button type='button' onClick={() => handleNewWork(values, { setFieldValue })} disabled={errors?.workExp?.work}> ADD MORE </button>
-      }
-
     </>
   )
 }

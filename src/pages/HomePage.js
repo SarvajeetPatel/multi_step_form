@@ -11,8 +11,8 @@ const steps = ['Personal Details', 'Work Experience', 'Skills', 'SelfDescription
 
 function HomePage() {
     const [activeStep, setActiveStep] = useState(0);
-    const details = JSON.parse(localStorage.getItem('current application')) || {}
-    
+    var details = JSON.parse(localStorage.getItem('current application')) || {}
+
     useEffect(() => {
         const currStep = JSON.parse(localStorage.getItem('step')) || 0
         setActiveStep(currStep);
@@ -34,8 +34,12 @@ function HomePage() {
         setActiveStep((prevActiveStep) => prevActiveStep - 1)
     };
 
-    const handleReset = () => {
-        setActiveStep(0);
+    const handleReset = (values) => {
+        setActiveStep(0)
+        values.personalDetails = {}
+        values.workExp = {}
+        values.skills = {}
+        values.desp = {}
         localStorage.removeItem('current application')
         localStorage.removeItem('step')
     };
@@ -77,7 +81,6 @@ function HomePage() {
                     </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={handleReset}>Reset</Button>
                     </Box>
                 </React.Fragment>
             ) : (
@@ -118,7 +121,7 @@ function HomePage() {
                         validateOnMount={false}
                     >
                         {
-                            ({ handleSubmit }) => (
+                            ({ handleSubmit, values }) => (
                                 <form onSubmit={handleSubmit}>
                                     {activeStep === 0 && <PersonalDetails />}
                                     {activeStep === 1 && <WorkExperience />}
@@ -134,7 +137,7 @@ function HomePage() {
                                             Back
                                         </Button>
                                         <Box sx={{ flex: '1 1 auto' }} />
-
+                                        <Button onClick={() => handleReset(values)}>Reset</Button>
                                         <Button type='submit'>
                                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                                         </Button>

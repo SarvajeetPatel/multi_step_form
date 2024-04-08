@@ -43,12 +43,16 @@ function HomePage() {
     const handleTabs = (i) => {
         if (i === 1 && details.personalDetails.name !== '') {
             setActiveStep(1)
+            localStorage.setItem('step', JSON.stringify(i))
         } else if (i === 2 && details.workExp.designation !== '') {
             setActiveStep(2)
+            localStorage.setItem('step', JSON.stringify(i))
         } else if (i === 3 && details.skills.industry !== '') {
             setActiveStep(3)
+            localStorage.setItem('step', JSON.stringify(i))
         } else if (i === 0) {
             setActiveStep(0)
+            localStorage.setItem('step', JSON.stringify(i))
         }
     }
 

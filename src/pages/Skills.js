@@ -10,7 +10,7 @@ function Skills() {
     <>
       <h2> Your Skills! </h2>
       <label> Please Choose Your Industry : </label>
-      <select name='skills.industry' onChange={(e) => { handleChange(e); setFieldValue('skills.skills', []) }} defaultChecked={values.skills.industry} defaultValue={values.skills.industry} >
+      <select name='skills.industry' onChange={(e) => { handleChange(e); setFieldValue('skills.skills', []) }}  defaultValue={values.skills.industry} >
         <option value='' disabled selected hidden> Select One Industry </option>
         <option value='Engineering'> Engineering </option>
         <option value='Finance'> Finance </option>

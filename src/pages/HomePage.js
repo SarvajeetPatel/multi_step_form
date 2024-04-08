@@ -1,10 +1,5 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import React, { useState, useEffect } from 'react';
+import { Box, Stepper, Step, StepLabel, Button, Typography } from '@mui/material';
 import PersonalDetails from './PersonalDetails';
 import WorkExperience from './WorkExperience';
 import Skills from './Skills';
@@ -15,68 +10,58 @@ import { validationSchema } from '../components/validationSchema';
 const steps = ['Personal Details', 'Work Experience', 'Skills', 'SelfDescription'];
 
 function HomePage() {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const details = JSON.parse(localStorage.getItem('Personal Details')) || ''
-    const workDetail = JSON.parse(localStorage.getItem('Work Experience')) || ''
-    const skillDetails = JSON.parse(localStorage.getItem('Skills')) || ''
+    const [activeStep, setActiveStep] = useState(0);
+    const details = JSON.parse(localStorage.getItem('current application')) || {}
 
-    React.useEffect(() => {
+    useEffect(() => {
         const currStep = JSON.parse(localStorage.getItem('step')) || 0
         setActiveStep(currStep);
     }, [])
 
-    const handleNext = async (values) => {
-
-        switch (activeStep) {
-            case 0:
-                localStorage.setItem('Personal Details', JSON.stringify(values.personalDetails))
-                break;
-            case 1:
-                if (values.workExp.designation === 'fresher') {
-                    values.workExp.work = [];
-                }
-                localStorage.setItem('Work Experience', JSON.stringify(values.workExp))
-                break;
-            case 2:
-                localStorage.setItem('Skills', JSON.stringify(values.skills))
-                break;
-            case 3:
-                localStorage.setItem('Self Description', JSON.stringify(values.desp))
-                const users = JSON.parse(localStorage.getItem('user application')) || []
-                users.push(values)
-                localStorage.setItem('user application', JSON.stringify(users))
-                break;
-            default:
-                break;
+    const handleNext = (values) => {
+        if (activeStep === 3) {
+            const users = JSON.parse(localStorage.getItem('user application')) || []
+            users.push(values)
+            localStorage.setItem('user application', JSON.stringify(users))
         }
+        localStorage.setItem('current application', JSON.stringify(values))
         localStorage.setItem('step', JSON.stringify(activeStep + 1))
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setActiveStep((prevActiveStep) => prevActiveStep + 1)
     };
 
     const handleBack = () => {
         localStorage.setItem('step', JSON.stringify(activeStep - 1))
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        setActiveStep((prevActiveStep) => prevActiveStep - 1)
     };
 
     const handleReset = () => {
         setActiveStep(0);
-        localStorage.removeItem('Personal Details')
-        localStorage.removeItem('Work Experience')
-        localStorage.removeItem('Skills')
+        localStorage.removeItem('current application')
         localStorage.removeItem('step')
-        localStorage.removeItem('Self Description')
     };
+
+    const handleTabs = (i) => {
+        if (i === 1 && details.personalDetails.name !== '') {
+            setActiveStep(1)
+        } else if (i === 2 && details.workExp.designation !== '') {
+            setActiveStep(2)
+        } else if (i === 3 && details.skills.industry !== '') {
+            setActiveStep(3)
+        } else if (i === 0) {
+            setActiveStep(0)
+        }
+    }
 
     return (
         <Box sx={{ width: '100%' }}>
             <Stepper activeStep={activeStep}>
-                {steps.map((label) => {
+                {steps.map((label, i) => {
                     const stepProps = {};
                     const labelProps = {};
 
                     return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
+                        <Step className='stepper' key={label} {...stepProps}>
+                            <StepLabel {...labelProps} onClick={() => handleTabs(i)}>{label}</StepLabel>
                         </Step>
                     );
                 })}
@@ -96,16 +81,16 @@ function HomePage() {
                     <Formik
                         initialValues={{
                             personalDetails: {
-                                name: details.name || '', email: details.email || '', contact: details.contact || '', address: details.address || '', gender: details.gender || '', birthDate: details.birthDate || ''
+                                name: details?.personalDetails?.name || '', email: details?.personalDetails?.email || '', contact: details?.personalDetails?.contact || '', address: details?.personalDetails?.address || '', gender: details?.personalDetails?.gender || '', birthDate: details?.personalDetails?.birthDate || ''
                             },
                             workExp: {
-                                designation: workDetail.designation || '', work: workDetail.work || []
+                                designation: details?.workExp?.designation || '', work: details?.workExp?.work || []
                             },
                             skills: {
-                                industry: skillDetails.industry || '', skills: skillDetails.skills || []
+                                industry: details?.skills?.industry || '', skills: details?.skills?.skills || []
                             },
                             desp: {
-                                value: ''
+                                value: details?.desp?.value || ''
                             }
                         }}
                         onSubmit={async (values) => {
@@ -124,7 +109,9 @@ function HomePage() {
                             }
                         }}
                         validationSchema={validationSchema[activeStep]}
-                        validateOnChange={true}
+                        validateOnChange={false}
+                        validateOnBlur={false}
+                        validateOnMount={false}
                     >
                         {
                             ({ handleSubmit }) => (

@@ -17,6 +17,12 @@ function WorkExperience() {
     values.workExp.work.push({ name: '', startDate: '', endDate: '', jobTitle: '' })
     setFieldValue('workExp.work', values.workExp.work)
   }
+
+  function handleDelete(i, values, { setFieldValue }) {
+    values.workExp.work.splice(i, 1)
+    setFieldValue('workExp.work', values.workExp.work)
+  }
+
   return (
     <>
       <h2> Work Experience! </h2>
@@ -46,6 +52,9 @@ function WorkExperience() {
             <label> Job Title : </label>
             <input type='text' name={`workExp.work[${i}].jobTitle`} value={values.workExp?.work[i]?.jobTitle} onChange={handleChange} />
             <div className='validate'> {errors?.workExp?.work?.[i]?.jobTitle}</div><br />
+
+            {(i !== 0) &&
+              <button type='button' onClick={() => handleDelete(i, values, { setFieldValue })}> DELETE </button>}
           </>
         ))
       }

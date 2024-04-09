@@ -45,13 +45,14 @@ function HomePage() {
     };
 
     const handleTabs = (i) => {
-        if (i === 1 && details?.personalDetails?.name.length !== 0) {
+        console.log(details?.personalDetails?.name.length, details?.workExp?.designation.length, details?.skills?.industry.length)
+        if (i === 1 && details?.personalDetails?.name.length !== undefined) {
             setActiveStep(1)
             localStorage.setItem('step', JSON.stringify(i))
-        } else if (i === 2 && details?.workExp?.designation.length !== 0) {
+        } else if (i === 2 && details?.workExp?.designation.length !== undefined) {
             setActiveStep(2)
             localStorage.setItem('step', JSON.stringify(i))
-        } else if (i === 3 && details?.skills?.industry.length !== 0) {
+        } else if (i === 3 && details?.skills?.industry.length !== undefined) {
             setActiveStep(3)
             localStorage.setItem('step', JSON.stringify(i))
         } else if (i === 0) {

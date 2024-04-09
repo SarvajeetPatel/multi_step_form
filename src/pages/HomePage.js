@@ -45,7 +45,6 @@ function HomePage() {
     };
 
     const handleTabs = (i) => {
-        console.log(details?.personalDetails?.name.length, details?.workExp?.designation.length, details?.skills?.industry.length)
         if (i === 1 && details?.personalDetails?.name.length !== undefined) {
             setActiveStep(1)
             localStorage.setItem('step', JSON.stringify(i))

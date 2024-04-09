@@ -34,12 +34,16 @@ function HomePage() {
         setActiveStep((prevActiveStep) => prevActiveStep - 1)
     };
 
-    const handleReset = (values) => {
+    const handleReset = (values, { setFieldValue }) => {
         setActiveStep(0)
-        values.personalDetails = {}
-        values.workExp = {}
-        values.skills = {}
-        values.desp = {}
+        values.personalDetails = { name: '', email: '', contact: '', address: '', gender: '', birthDate: '' }
+        values.workExp = { designation: '', work: [] }
+        values.skills = { industry: '', skills: [] }
+        values.desp = { value: '' }
+        setFieldValue('values.personalDetails', values.personalDetails)
+        setFieldValue('values.workExp', values.workExp)
+        setFieldValue('values.skills', values.skills)
+        setFieldValue('values.desp', values.desp)
         localStorage.removeItem('current application')
         localStorage.removeItem('step')
     };
@@ -121,7 +125,7 @@ function HomePage() {
                         validateOnMount={false}
                     >
                         {
-                            ({ handleSubmit, values }) => (
+                            ({ handleSubmit, values, setFieldValue }) => (
                                 <form onSubmit={handleSubmit}>
                                     {activeStep === 0 && <PersonalDetails />}
                                     {activeStep === 1 && <WorkExperience />}
@@ -137,7 +141,7 @@ function HomePage() {
                                             Back
                                         </Button>
                                         <Box sx={{ flex: '1 1 auto' }} />
-                                        <Button onClick={() => handleReset(values)}>Reset</Button>
+                                        <Button onClick={() => handleReset(values, { setFieldValue })}>Reset</Button>
                                         <Button type='submit'>
                                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                                         </Button>

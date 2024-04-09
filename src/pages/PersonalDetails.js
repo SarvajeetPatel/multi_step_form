@@ -7,6 +7,7 @@ function PersonalDetails() {
     const { values, handleBlur, handleChange, setFieldValue, errors } = useFormikContext();
     const min = Number(new Date().getFullYear() - 18)
     const firstDate = format(new Date(), `${min}/12/31 00:00:00`)
+    console.log(values?.personalDetails?.gender)
     return (
         <>
             <h2> Personal Details </h2>
@@ -27,11 +28,11 @@ function PersonalDetails() {
             <div className='validate'>{errors?.personalDetails?.address}</div><br /> <br />
 
             <label> Select your Gender : </label>
-            <input type='radio' name='personalDetails.gender' value='Female' onChange={handleChange} onBlur={handleBlur} defaultChecked={values?.personalDetails?.gender === 'Female'} />
+            <input type='radio' name='personalDetails.gender' value='Female' onChange={handleChange} onBlur={handleBlur} checked={values?.personalDetails?.gender === 'Female'} />
             <label>Female</label>
-            <input type='radio' name='personalDetails.gender' value='Male' onChange={handleChange} onBlur={handleBlur} defaultChecked={values?.personalDetails?.gender === 'Male'} />
+            <input type='radio' name='personalDetails.gender' value='Male' onChange={handleChange} onBlur={handleBlur} checked={values?.personalDetails?.gender === 'Male'} />
             <label>Male</label>
-            <input type='radio' name='personalDetails.gender' value='Others' onChange={handleChange} onBlur={handleBlur} defaultChecked={values?.personalDetails?.gender === 'Others'} />
+            <input type='radio' name='personalDetails.gender' value='Others' onChange={handleChange} onBlur={handleBlur} checked={values?.personalDetails?.gender === 'Others'} />
             <label>Others</label>
             <div className='validate'>{errors?.personalDetails?.gender}</div> <br /> <br />
 
